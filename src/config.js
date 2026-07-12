@@ -13,4 +13,7 @@ export const config = {
   convexUrl: process.env.CONVEX_URL || "",
   defaultAdminEmail: (process.env.DEFAULT_ADMIN_EMAIL || "").trim().toLowerCase(),
   adminApiToken: process.env.ADMIN_API_TOKEN || "",
+  adminUsername: process.env.ADMIN_USERNAME || "newsadmin",
+  adminPasswordHash: process.env.ADMIN_PASSWORD_HASH || "",
+  adminSessionSecret: process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_API_TOKEN || "",
 };
