@@ -1,5 +1,6 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { deduplicateStories } from "./news.js";
 
 async function checkedFetch(url, options, label) {
   const response = await fetch(url, options);
@@ -23,18 +24,15 @@ export function parseLinkupSources(data) {
 }
 
 export async function searchLinkup(apiKey) {
-  const response = await checkedFetch("https://api.linkup.so/v1/search", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({
-      q: "Most important verified India news stories published in the last 24 hours across national affairs, business, technology, science and sports",
-      depth: "standard",
-      outputType: "searchResults",
-      maxResults: 10,
-      includeDomains: ["thehindu.com", "indianexpress.com", "ndtv.com", "economictimes.indiatimes.com", "hindustantimes.com", "timesofindia.indiatimes.com"],
-    }),
-  }, "Linkup search");
-  return parseLinkupSources(await response.json());
+  const groups = [
+    ["India national affairs verified news last 24 hours", ["thehindu.com", "indianexpress.com", "hindustantimes.com"]],
+    ["India and world top verified news last 24 hours", ["reuters.com", "bbc.com", "apnews.com", "aljazeera.com"]],
+    ["India business economy markets news last 24 hours", ["economictimes.indiatimes.com", "livemint.com", "moneycontrol.com"]],
+    ["India technology science AI space news last 24 hours", ["techcrunch.com", "theverge.com", "arstechnica.com", "nature.com"]],
+    ["India sports cricket verified news last 24 hours", ["espncricinfo.com", "sportstar.thehindu.com", "olympics.com"]],
+  ];
+  const batches = await Promise.all(groups.map(([q,includeDomains],index)=>checkedFetch("https://api.linkup.so/v1/search", { method:"POST", headers:{Authorization:`Bearer ${apiKey}`,"Content-Type":"application/json"}, body:JSON.stringify({q,depth:"standard",outputType:"searchResults",maxResults:6,includeDomains}) }, `Linkup search ${index+1}`).then(r=>r.json())));
+  return deduplicateStories(batches.flatMap(parseLinkupSources));
 }
 
 export async function generateOpenAI(apiKey, model, system, input) {
@@ -83,4 +81,12 @@ export async function publishTelegram(token, channelId, draft) {
     body: JSON.stringify({ chat_id: channelId, text: buildTelegramText(draft), disable_web_page_preview: true }),
   }, "Telegram publish");
   return (await response.json()).result;
+}
+
+export async function publishTelegramAudio(token, channelId, audioPath, draft) {
+  const { readFile } = await import("node:fs/promises");
+  const form=new FormData(); form.set("chat_id",channelId); form.set("title",draft.headline.slice(0,64)); form.set("caption",`🎙️ ${draft.headline}
+
+Verified by the NewsXroom Judge agent.`); form.set("audio",new Blob([await readFile(audioPath)],{type:"audio/mpeg"}),path.basename(audioPath));
+  const response=await checkedFetch(`https://api.telegram.org/bot${token}/sendAudio`,{method:"POST",body:form},"Telegram audio publish"); return (await response.json()).result;
 }

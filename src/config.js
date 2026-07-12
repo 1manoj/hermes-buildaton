@@ -10,4 +10,5 @@ export const config = {
   telegramChannel: process.env.TELEGRAM_CHANNEL_ID || "",
   telegramBotUsername: process.env.TELEGRAM_BOT_USERNAME || "newsXroom_bot",
   publicChannelUrl: process.env.PUBLIC_CHANNEL_URL || "https://t.me/newxroom",
+  convexUrl: process.env.CONVEX_URL || "",
 };
