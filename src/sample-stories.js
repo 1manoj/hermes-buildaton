@@ -1,0 +1,8 @@
+export const sampleStories = [
+  {title:"ISRO completes reusable launch vehicle landing trial", source:"Demo Wire", url:"https://example.com/isro", summary:"ISRO reported a successful autonomous runway landing trial in Karnataka.", publishedAt:"2026-07-12T03:30:00Z", category:"science"},
+  {title:"UPI transactions reach a new monthly high", source:"Demo Business", url:"https://example.com/upi", summary:"India's real-time payment network recorded a new transaction-volume milestone.", publishedAt:"2026-07-12T03:20:00Z", category:"business"},
+  {title:"Heavy rain alert issued for parts of Maharashtra", source:"Demo Weather", url:"https://example.com/rain", summary:"Weather officials advised residents in several districts to prepare for intense rainfall.", publishedAt:"2026-07-12T03:10:00Z", category:"national"},
+  {title:"Indian startup launches low-cost farm sensor", source:"Demo Tech", url:"https://example.com/farm", summary:"A Pune startup introduced an affordable sensor to help small farms monitor soil conditions.", publishedAt:"2026-07-12T03:00:00Z", category:"technology"},
+  {title:"India wins opening match of international hockey series", source:"Demo Sports", url:"https://example.com/hockey", summary:"India secured a narrow victory in the opening match after a late goal.", publishedAt:"2026-07-12T02:50:00Z", category:"sports"},
+  {title:"Unverified social post claims nationwide bank shutdown", source:"Social Media", url:"https://example.com/rumour", summary:"An anonymous post makes a major claim without naming an official source.", publishedAt:"2026-07-12T02:40:00Z", category:"national"}
+];

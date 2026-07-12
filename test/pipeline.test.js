@@ -1,0 +1,3 @@
+import test from "node:test";import assert from "node:assert/strict";import { runPipeline } from "../src/pipeline.js";import { agents } from "../src/agents.js";
+test("six-agent pipeline publishes a fact-gated bulletin",async()=>{const run=await runPipeline();assert.equal(run.status,"complete");assert.equal(run.steps.length,6);assert.deepEqual(run.steps.map(s=>s.agent),["Monitor","Editor","Writer","Judge","Anchor","Publisher"]);assert.ok(run.publication.text.includes("Overnight Newsroom"));});
+test("editor excludes unverified social-only story",async()=>{const stories=await agents.monitor();const rundown=await agents.editor(stories);assert.equal(rundown.some(s=>s.source==="Social Media"),false);assert.equal(rundown.length,5);});

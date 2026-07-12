@@ -1,0 +1,1 @@
+import { runPipeline } from "../src/pipeline.js";const run=await runPipeline();console.log(JSON.stringify({id:run.id,status:run.status,agents:run.steps.map(s=>`${s.agent}:${s.status}`),headline:run.publication?.headline},null,2));if(run.status!=="complete")process.exitCode=1;

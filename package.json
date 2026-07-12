@@ -1,0 +1,13 @@
+{
+  "name": "overnight-newsroom",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node src/server.js",
+    "start": "node src/server.js",
+    "test": "node --test",
+    "demo": "node scripts/demo.js"
+  },
+  "engines": {"node": ">=20"}
+}
