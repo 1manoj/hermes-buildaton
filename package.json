@@ -4,10 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "node src/server.js",
-    "start": "node src/server.js",
+    "dev": "node --env-file-if-exists=.env src/server.js",
+    "start": "node --env-file-if-exists=.env src/server.js",
     "test": "node --test",
-    "demo": "node scripts/demo.js"
+    "demo": "node --env-file-if-exists=.env scripts/demo.js",
+    "telegram:discover": "node --env-file-if-exists=.env scripts/telegram-discover.js",
+    "integrations:check": "node --env-file-if-exists=.env scripts/check-integrations.js"
   },
   "engines": {"node": ">=20"}
 }

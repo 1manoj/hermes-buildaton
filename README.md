@@ -46,6 +46,21 @@ The MVP defaults to `DEMO_MODE=true`. Put credentials in `.env` only—never com
 
 The deterministic adapters are intentional: the complete product and demo remain testable while sponsor credentials are being provisioned. Each live adapter can replace one boundary without changing the six-agent orchestration.
 
+## Built on Hermes
+
+Hermes is the operating base—not merely a model call. The repository ships an installable skill at `skills/overnight-newsroom/SKILL.md`. When loaded by Hermes, it defines the newsroom operating procedure, editorial safety invariants, execution commands, and verification gates. Hermes invokes and supervises the six-role pipeline while sponsor APIs provide specialist tools.
+
+Install the project skill locally:
+
+```bash
+mkdir -p ~/.hermes/skills/overnight-newsroom
+cp skills/overnight-newsroom/SKILL.md ~/.hermes/skills/overnight-newsroom/SKILL.md
+```
+
+Start a fresh Hermes session and invoke `/overnight-newsroom run a verified India bulletin`. This demonstrates a reusable Hermes capability that can be installed by another operator, not a standalone UI with Hermes branding.
+
+See [`TELEGRAM-SETUP.md`](./TELEGRAM-SETUP.md) for channel setup and ID discovery.
+
 ## Architecture
 
 ```text

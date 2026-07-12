@@ -1,0 +1,6 @@
+import { config } from "../src/config.js";
+async function check(name,fn){try{const value=await fn();console.log(`✓ ${name}: ${value}`);}catch(e){console.error(`✗ ${name}: ${e.message}`);process.exitCode=1;}}
+await check("OpenAI",async()=>{const r=await fetch("https://api.openai.com/v1/models",{headers:{Authorization:`Bearer ${config.openaiKey}`}});if(!r.ok)throw new Error(`HTTP ${r.status}`);return "authenticated";});
+await check("Linkup",async()=>{const r=await fetch("https://api.linkup.so/v1/credits/balance",{headers:{Authorization:`Bearer ${config.linkupKey}`}});if(!r.ok)throw new Error(`HTTP ${r.status}`);return "authenticated";});
+await check("ElevenLabs",async()=>{const r=await fetch("https://api.elevenlabs.io/v2/voices?page_size=100",{headers:{"xi-api-key":config.elevenLabsKey}});if(!r.ok)throw new Error(`HTTP ${r.status}`);const voices=(await r.json()).voices||[];const v=voices.find(x=>x.voice_id===config.elevenLabsVoiceId);if(!v)throw new Error("configured voice is not available");return `voice ${v.name}`;});
+await check("Telegram",async()=>{const r=await fetch(`https://api.telegram.org/bot${config.telegramToken}/getMe`);const x=await r.json();if(!x.ok)throw new Error(x.description);return `@${x.result.username}`;});
