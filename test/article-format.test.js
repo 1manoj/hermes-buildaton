@@ -1,0 +1,5 @@
+import test from "node:test";import assert from "node:assert/strict";
+import { articleParagraphs } from "../src/article-format.js";
+test("formats a continuous detailed article into three or four paragraphs",()=>{const text="India announced the programme today. Officials described its first objective. The programme will begin this year. Funding details were also released. Researchers welcomed the announcement. Independent reviews will follow. The next update is expected later this month. The source did not announce any additional measures.";const out=articleParagraphs(text);assert.ok(out.length>=3&&out.length<=4);assert.equal(out.join(" "),text);});
+test("preserves an existing four-paragraph article",()=>{const text="First paragraph.\n\nSecond paragraph.\n\nThird paragraph.\n\nFourth paragraph.";assert.deepEqual(articleParagraphs(text),["First paragraph.","Second paragraph.","Third paragraph.","Fourth paragraph."]);});
+test("does not pad a short article with invented copy",()=>{assert.deepEqual(articleParagraphs("One verified fact."),["One verified fact."]);});

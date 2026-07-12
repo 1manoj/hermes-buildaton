@@ -1,5 +1,5 @@
-import { config } from "../src/config.js";import { listUsers } from "../src/users.js";import { listRuns } from "../src/store.js";
-const run=(await listRuns()).find(x=>x.status==="complete");if(!run)throw new Error("No completed bulletin run");const users=(await listUsers()).filter(x=>x.telegramChatId);for(const user of users){const text=`📰 Your ${user.frequency} NewsXroom digest
+import { config } from "../src/config.js";import { listUsers } from "../src/users.js";import { convexConnectedUsers } from "../src/convex.js";import { listRuns } from "../src/store.js";
+const run=(await listRuns()).find(x=>x.status==="complete");if(!run)throw new Error("No completed bulletin run");const users=[...await convexConnectedUsers(),...(await listUsers()).filter(x=>x.telegramChatId)].filter((x,i,a)=>a.findIndex(y=>y.telegramChatId===x.telegramChatId)===i);for(const user of users){const text=`📰 Your ${user.frequency} NewsXroom digest
 
 Interests: ${user.topics.join(", ")}
 
