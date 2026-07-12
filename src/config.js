@@ -16,4 +16,9 @@ export const config = {
   adminUsername: process.env.ADMIN_USERNAME || "newsadmin",
   adminPasswordHash: process.env.ADMIN_PASSWORD_HASH || "",
   adminSessionSecret: process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_API_TOKEN || "",
+  userSessionSecret: process.env.USER_SESSION_SECRET || process.env.ADMIN_SESSION_SECRET || process.env.ADMIN_API_TOKEN || "",
+  twilioAccountSid: process.env.TWILIO_ACCOUNT_SID || "",
+  twilioAuthToken: process.env.TWILIO_AUTH_TOKEN || "",
+  twilioWhatsAppFrom: process.env.TWILIO_WHATSAPP_FROM || "",
+  fcmServerKey: process.env.FCM_SERVER_KEY || "",
 };

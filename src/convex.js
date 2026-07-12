@@ -22,3 +22,6 @@ export async function convexWatchOwner(userId){if(!client)return null;return cli
 export async function convexAlertExists(ruleId,fingerprint){if(!client)return null;return client.query(anyApi.watchRules.alertExists,{ruleId,fingerprint});}
 export async function convexSaveWatchAlert(input){if(!client)return null;return client.mutation(anyApi.watchRules.saveAlert,input);}
 export async function convexRecentWatchAlerts(userId){if(!client)return [];return client.query(anyApi.watchRules.recentAlerts,userId?{userId}:{});}
+export async function convexUserByEmail(email){if(!client)return null;return client.query(anyApi.users.getByEmail,{email:String(email).trim().toLowerCase()});}
+export async function convexUserById(userId){if(!client)return null;return client.query(anyApi.users.get,{userId});}
+export async function convexUpdateUserProfile(input){if(!client)return null;return client.mutation(anyApi.users.updateProfile,input);}
