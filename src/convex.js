@@ -26,3 +26,4 @@ export async function convexUserByEmail(email){if(!client)return null;return cli
 export async function convexUserById(userId){if(!client)return null;return client.query(anyApi.users.get,{userId});}
 export async function convexUpdateUserProfile(input){if(!client)return null;return client.mutation(anyApi.users.updateProfile,input);}
 export async function convexSetUserPassword(email,passwordHash){if(!client)return null;return client.mutation(anyApi.users.setPasswordHash,{email:String(email).trim().toLowerCase(),passwordHash});}
+export async function convexUpdateUserTopics(userId,topics){if(!client)return null;return client.mutation(anyApi.users.updateTopics,{userId,topics});}

@@ -9,8 +9,8 @@ export function selectPersonalizedStories(stories = [], profile = {}) {
     .map(x => x.story);
 }
 
-export function buildFirstBriefing(user = {}, edition) {
-  const stories = selectPersonalizedStories(edition?.stories || [], user);
+export function buildFirstBriefing(user = {}, edition, limit = 5) {
+  const stories = selectPersonalizedStories(edition?.stories || [], user).slice(0,Math.max(1,Math.min(5,limit)));
   if (!stories.length) {
     return {
       stories: [],
