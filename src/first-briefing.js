@@ -38,14 +38,16 @@ export async function sendTelegramBriefing(token, chatId, briefing, audioUrl) {
   });
   const result = await response.json();
   if (!response.ok || !result.ok) throw new Error(result.description || `Telegram send failed (${response.status})`);
-  let audioSent = false;
-  if (audioUrl && /^https?:\/\//.test(audioUrl)) {
-    const audioResponse = await fetch(`${endpoint}/sendAudio`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ chat_id: chatId, audio: audioUrl, caption: "🎙️ Your latest BulletNews audio briefing" }),
-    });
-    audioSent = audioResponse.ok && Boolean((await audioResponse.json()).ok);
+  let audioSent = false, audioMessageId;
+  if (audioUrl) {
+    let audioResponse;
+    if (/^https?:\/\//.test(audioUrl)) audioResponse=await fetch(`${endpoint}/sendAudio`,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({chat_id:chatId,audio:audioUrl,caption:"🎙️ Your latest personalized BulletNews audio briefing"})});
+    else {
+      const {readFile}=await import("node:fs/promises"),path=await import("node:path"),form=new FormData();
+      form.set("chat_id",String(chatId));form.set("caption",`🎙️ ${briefing.stories.length}-story personalized BulletNews audio briefing`);form.set("audio",new Blob([await readFile(audioUrl)],{type:"audio/mpeg"}),path.basename(audioUrl));
+      audioResponse=await fetch(`${endpoint}/sendAudio`,{method:"POST",body:form});
+    }
+    const audioResult=await audioResponse.json();audioSent=audioResponse.ok&&Boolean(audioResult.ok);audioMessageId=audioResult.result?.message_id;
   }
-  return { sent: true, audioSent, messageId: result.result?.message_id };
+  return { sent: true, audioSent, messageId: result.result?.message_id, audioMessageId };
 }
