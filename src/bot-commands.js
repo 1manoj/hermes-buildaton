@@ -1,4 +1,6 @@
 const supported=["national","business","technology","science","sports","world"];
+import path from "node:path";
 export function parseBotCommand(text){const match=String(text||"").trim().match(/^\/([a-z]+)(?:@[a-z0-9_]+)?(?:\s+(.+))?$/i);if(!match)return null;const result={name:match[1].toLowerCase(),args:String(match[2]||"").trim()};if(result.name==="news")result.count=Math.max(2,Math.min(4,Number.parseInt(result.args,10)||4));return result;}
 export function updateTopicsFromCommand(args){return [...new Set(String(args||"").toLowerCase().split(/[\s,]+/).filter(x=>supported.includes(x)))];}
+export function editionAudioPath(edition,root=process.cwd()){const value=String(edition?.audioUrl||"");if(/^https?:\/\//.test(value))return value;if(value.startsWith("/audio/"))return path.join(root,"public",value);return null;}
 export const botHelp=`BulletNews commands:\n/news [2-4] — get personalized news now\n/taste technology,business — update news beats\n/settings — view your tastes and schedule\n/status — check Telegram connection\n/help — show commands`;
