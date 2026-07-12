@@ -10,6 +10,8 @@
     "demo": "node --env-file-if-exists=.env scripts/demo.js",
     "telegram:discover": "node --env-file-if-exists=.env scripts/telegram-discover.js",
     "integrations:check": "node --env-file-if-exists=.env scripts/check-integrations.js"
+    ,"bot": "node --env-file-if-exists=.env scripts/bot.js"
+    ,"digest:send": "node --env-file-if-exists=.env scripts/send-personalized.js"
   },
   "engines": {"node": ">=20"}
 }

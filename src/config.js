@@ -8,4 +8,6 @@ export const config = {
   linkupKey: process.env.LINKUP_API_KEY || "",
   telegramToken: process.env.TELEGRAM_BOT_TOKEN || "",
   telegramChannel: process.env.TELEGRAM_CHANNEL_ID || "",
+  telegramBotUsername: process.env.TELEGRAM_BOT_USERNAME || "newsXroom_bot",
+  publicChannelUrl: process.env.PUBLIC_CHANNEL_URL || "https://t.me/newxroom",
 };

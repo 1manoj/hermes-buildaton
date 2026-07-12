@@ -31,6 +31,38 @@ Open <http://localhost:8787> and click **Run newsroom**.
   - `POST /api/run`
 - Responsive, zero-dependency management dashboard
 - Automated tests and one-command demo
+- Landing-page signup with topic and delivery-frequency preferences
+- Telegram deep-link account connection (`/start <token>`)
+- Public bulletin publishing to [`@newxroom`](https://t.me/newxroom)
+- Personalized private digests through `@newsXroom_bot`
+- Hosted Convex schema for users, bulletins, and delivery records
+
+## Product flow
+
+1. A visitor selects topics such as technology, business, sports, or science.
+2. Signup creates a profile and returns a unique Telegram deep link.
+3. The visitor taps **Start the bot**. Telegram sends `/start <token>` to `@newsXroom_bot`, linking the private chat to the profile.
+4. The six-agent newsroom publishes the shared top bulletin to `@newxroom`.
+5. Personalized selections are sent privately by the bot because a Telegram channel cannot display different posts to different subscribers.
+
+Run the bot listener and personalized delivery worker:
+
+```bash
+npm run bot
+npm run digest:send
+```
+
+## Convex cloud
+
+The `convex/` directory defines hosted tables and functions. Link this repository to the existing Convex project, then push once:
+
+```bash
+npx convex dev
+# After .env.local exists:
+npx convex dev --once
+```
+
+No tables need to be manually created in the dashboard; Convex applies `convex/schema.ts` automatically.
 
 ## Live-service configuration
 
