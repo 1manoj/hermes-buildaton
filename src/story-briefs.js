@@ -1,0 +1,6 @@
+const generic=/latest news|today'?s top stories|breaking news|news headlines|all news|india news \|/i;
+const tokens=s=>new Set(String(s||"").toLowerCase().replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(x=>x.length>3));
+const sameEvent=(a,b)=>{const x=tokens(a),y=tokens(b),hit=[...x].filter(w=>y.has(w)).length;return hit/Math.max(1,Math.min(x.size,y.size))>=.65;};
+export function isArticleResult(story){if(!story?.url||!story?.title||generic.test(story.title))return false;let u;try{u=new URL(story.url);}catch{return false}const path=u.pathname.replace(/\/$/,"");if(!path||path.split('/').filter(Boolean).length<2)return false;return String(story.summary||"").length>=40;}
+export function selectUniqueEvents(stories,limit=5){const out=[];for(const story of stories){if(out.some(x=>sameEvent(x.title,story.title)))continue;out.push(story);if(out.length===limit)break;}return out;}
+export function buildStoryBriefs(rundown,generated=[]){return rundown.slice(0,5).map((story,index)=>{const made=generated.find(x=>x.title===story.title)||generated[index]||{};return {...story,rank:story.rank||index+1,article:made.article||story.summary,audioScript:made.audioScript||story.summary,audioUrl:null};});}
