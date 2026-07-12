@@ -1,0 +1,15 @@
+import { mutation, query } from "./_generated/server";
+import { v } from "convex/values";
+const interval=(u:string)=>({critical:300000,high:900000,normal:3600000,low:86400000}[u]||3600000);
+export const create=mutation({args:{userId:v.id("users"),targetType:v.string(),target:v.string(),eventTypes:v.array(v.string()),urgency:v.string()},handler:async(ctx,a)=>{const now=Date.now();return ctx.db.insert("watchRules",{...a,enabled:true,lastCheckedAt:0,nextCheckAt:now,createdAt:now,updatedAt:now});}});
+export const listByUser=query({args:{userId:v.id("users")},handler:(ctx,a)=>ctx.db.query("watchRules").withIndex("by_user",q=>q.eq("userId",a.userId)).collect()});
+export const listAll=query({args:{},handler:ctx=>ctx.db.query("watchRules").collect()});
+export const due=query({args:{now:v.number()},handler:async(ctx,a)=>(await ctx.db.query("watchRules").collect()).filter(x=>x.enabled&&x.nextCheckAt<=a.now)});
+export const setEnabled=mutation({args:{ruleId:v.id("watchRules"),enabled:v.boolean()},handler:(ctx,a)=>ctx.db.patch(a.ruleId,{enabled:a.enabled,updatedAt:Date.now(),nextCheckAt:a.enabled?Date.now():Number.MAX_SAFE_INTEGER})});
+export const remove=mutation({args:{ruleId:v.id("watchRules")},handler:(ctx,a)=>ctx.db.delete(a.ruleId)});
+export const markChecked=mutation({args:{ruleId:v.id("watchRules"),urgency:v.string(),checkedAt:v.number()},handler:(ctx,a)=>ctx.db.patch(a.ruleId,{lastCheckedAt:a.checkedAt,nextCheckAt:a.checkedAt+interval(a.urgency),updatedAt:a.checkedAt})});
+export const get=query({args:{ruleId:v.id("watchRules")},handler:(ctx,a)=>ctx.db.get(a.ruleId)});
+export const owner=query({args:{userId:v.id("users")},handler:(ctx,a)=>ctx.db.get(a.userId)});
+export const alertExists=query({args:{ruleId:v.id("watchRules"),fingerprint:v.string()},handler:(ctx,a)=>ctx.db.query("watchAlerts").withIndex("by_rule_fingerprint",q=>q.eq("ruleId",a.ruleId).eq("fingerprint",a.fingerprint)).unique()});
+export const saveAlert=mutation({args:{ruleId:v.id("watchRules"),userId:v.id("users"),fingerprint:v.string(),title:v.string(),summary:v.string(),url:v.string(),source:v.string(),materiality:v.number(),status:v.string(),telegramMessageId:v.optional(v.string())},handler:(ctx,a)=>ctx.db.insert("watchAlerts",{...a,createdAt:Date.now()})});
+export const recentAlerts=query({args:{userId:v.optional(v.id("users"))},handler:async(ctx,a)=>{const rows=a.userId?await ctx.db.query("watchAlerts").withIndex("by_user",q=>q.eq("userId",a.userId!)).collect():await ctx.db.query("watchAlerts").collect();return rows.sort((x,y)=>y.createdAt-x.createdAt).slice(0,100);}});

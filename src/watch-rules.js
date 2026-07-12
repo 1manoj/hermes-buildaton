@@ -1,0 +1,13 @@
+import { createHash } from "node:crypto";
+export const URGENCY={critical:{intervalMs:300000,minMateriality:45,label:"Near real-time"},high:{intervalMs:900000,minMateriality:60,label:"Frequent"},normal:{intervalMs:3600000,minMateriality:72,label:"Hourly"},low:{intervalMs:86400000,minMateriality:82,label:"Daily"}};
+export const TARGET_TYPES=["keyword","company","industry","domain","regulator","asset","topic"];
+export const EVENT_TYPES=["news","movement","results","filing","corporate-action","management-change","approval","incident"];
+export const urgencyIntervalMs=value=>(URGENCY[value]||URGENCY.normal).intervalMs;
+export function normalizeWatchRule(input={}){const target=String(input.target||"").trim(),targetType=TARGET_TYPES.includes(input.targetType)?input.targetType:"keyword",urgency=URGENCY[input.urgency]?input.urgency:"normal",eventTypes=[...new Set((input.eventTypes||["news"]).filter(x=>EVENT_TYPES.includes(x)))];return {targetType,target,urgency,eventTypes:eventTypes.length?eventTypes:["news"],enabled:input.enabled!==false,lastCheckedAt:Number(input.lastCheckedAt||0)};}
+export function isRuleDue(rule,now=Date.now()){return Boolean(rule.enabled)&&now-Number(rule.lastCheckedAt||0)>=urgencyIntervalMs(rule.urgency);}
+const canonicalUrl=value=>{try{const u=new URL(value);u.search="";u.hash="";return u.toString().replace(/\/$/,"");}catch{return String(value||"").trim().toLowerCase();}};
+export function eventFingerprint(event){return createHash("sha256").update(`${canonicalUrl(event.url)}|${String(event.title||"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim()}`).digest("hex").slice(0,32);}
+export const shouldAlert=(rule,event)=>Number(event.materiality||0)>=(URGENCY[rule.urgency]||URGENCY.normal).minMateriality;
+const labels={news:"news",movement:"price movement and market-moving developments",results:"financial results earnings guidance",filing:"official filings disclosures", "corporate-action":"corporate actions dividend split buyback merger", "management-change":"management board leadership role changes",approval:"regulatory approvals",incident:"material incidents outages safety security"};
+export function watchQuery(input){const r=normalizeWatchRule(input);return `${r.target} ${r.eventTypes.map(x=>labels[x]).join(" ")} latest verified developments`;}
+export function estimateMateriality(event,rule){const text=`${event.title} ${event.summary}`.toLowerCase();let score=45;if(rule.eventTypes.some(x=>text.includes(x.replace("-"," "))))score+=20;if(/results|earnings|merger|acquisition|resign|appoint|approval|recall|breach|outage|guideline|trial|dividend|buyback/i.test(text))score+=20;if(/official|exchange|regulator|filing|reported|announced/i.test(text))score+=10;return Math.min(100,score);}

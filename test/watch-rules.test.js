@@ -1,0 +1,8 @@
+import test from "node:test";import assert from "node:assert/strict";
+import { normalizeWatchRule,urgencyIntervalMs,isRuleDue,eventFingerprint,shouldAlert,watchQuery } from "../src/watch-rules.js";
+test("urgency determines polling cadence",()=>{assert.equal(urgencyIntervalMs("critical"),300000);assert.equal(urgencyIntervalMs("high"),900000);assert.equal(urgencyIntervalMs("normal"),3600000);assert.equal(urgencyIntervalMs("low"),86400000)});
+test("normalizes company watch with explicit event types",()=>{const x=normalizeWatchRule({targetType:"company",target:"Reliance Industries",urgency:"high",eventTypes:["results","management-change","corporate-action"]});assert.equal(x.target,"Reliance Industries");assert.deepEqual(x.eventTypes,["results","management-change","corporate-action"]);assert.equal(x.enabled,true)});
+test("due calculation respects enabled state and last check",()=>{const now=1_000_000;assert.equal(isRuleDue({enabled:true,urgency:"critical",lastCheckedAt:now-300001},now),true);assert.equal(isRuleDue({enabled:false,urgency:"critical",lastCheckedAt:0},now),false)});
+test("event fingerprint deduplicates normalized URL and headline",()=>{const a=eventFingerprint({url:"https://x.com/a?utm_source=z",title:"Company Reports Results"}),b=eventFingerprint({url:"https://x.com/a",title:"company reports results"});assert.equal(a,b)});
+test("materiality threshold rises as urgency falls",()=>{assert.equal(shouldAlert({urgency:"critical"},{materiality:55}),true);assert.equal(shouldAlert({urgency:"low"},{materiality:55}),false)});
+test("query includes target and requested movements",()=>{assert.match(watchQuery({targetType:"company",target:"HDFC Bank",eventTypes:["results","management-change"]}),/HDFC Bank.*financial results.*management/i)});

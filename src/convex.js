@@ -11,3 +11,14 @@ export async function convexSetUserRole(userId,role){if(!client)return null;retu
 export async function convexGetSetting(key){if(!client)return null;return client.query(anyApi.settings.get,{key});}
 export async function convexSetSetting(key,value){if(!client)return null;return client.mutation(anyApi.settings.set,{key,value});}
 export async function convexConnectedUsers(){if(!client)return [];return client.query(anyApi.users.connected,{});}
+export async function convexCreateWatchRule(input){if(!client)return null;return client.mutation(anyApi.watchRules.create,input);}
+export async function convexUserWatchRules(userId){if(!client)return [];return client.query(anyApi.watchRules.listByUser,{userId});}
+export async function convexAllWatchRules(){if(!client)return [];return client.query(anyApi.watchRules.listAll,{});}
+export async function convexDueWatchRules(now=Date.now()){if(!client)return [];return client.query(anyApi.watchRules.due,{now});}
+export async function convexSetWatchEnabled(ruleId,enabled){if(!client)return null;return client.mutation(anyApi.watchRules.setEnabled,{ruleId,enabled});}
+export async function convexRemoveWatchRule(ruleId){if(!client)return null;return client.mutation(anyApi.watchRules.remove,{ruleId});}
+export async function convexMarkWatchChecked(ruleId,urgency,checkedAt=Date.now()){if(!client)return null;return client.mutation(anyApi.watchRules.markChecked,{ruleId,urgency,checkedAt});}
+export async function convexWatchOwner(userId){if(!client)return null;return client.query(anyApi.watchRules.owner,{userId});}
+export async function convexAlertExists(ruleId,fingerprint){if(!client)return null;return client.query(anyApi.watchRules.alertExists,{ruleId,fingerprint});}
+export async function convexSaveWatchAlert(input){if(!client)return null;return client.mutation(anyApi.watchRules.saveAlert,input);}
+export async function convexRecentWatchAlerts(userId){if(!client)return [];return client.query(anyApi.watchRules.recentAlerts,userId?{userId}:{});}

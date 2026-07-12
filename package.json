@@ -11,7 +11,8 @@
     "telegram:discover": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/telegram-discover.js",
     "integrations:check": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/check-integrations.js",
     "bot": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/bot.js",
-    "digest:send": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/send-personalized.js"
+    "digest:send": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/send-personalized.js",
+    "watch:run": "node --env-file-if-exists=.env --env-file-if-exists=.env.local scripts/watch-intelligence.js"
   },
   "engines": {
     "node": ">=20"

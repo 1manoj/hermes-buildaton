@@ -11,6 +11,7 @@
 import type * as bulletins from "../bulletins.js";
 import type * as settings from "../settings.js";
 import type * as users from "../users.js";
+import type * as watchRules from "../watchRules.js";
 
 import type {
   ApiFromModules,
@@ -22,6 +23,7 @@ declare const fullApi: ApiFromModules<{
   bulletins: typeof bulletins;
   settings: typeof settings;
   users: typeof users;
+  watchRules: typeof watchRules;
 }>;
 
 /**
