@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";
+import { buildProfessionalInsight, validateProfessionalInsights } from "../src/professional-insights.js";
+test("professional insight separates evidence impact risk opportunity and watchpoints",()=>{const x=buildProfessionalInsight({title:"Bank raises guidance after profit growth",summary:"The bank reported profit growth and raised full-year guidance.",source:"NSE",url:"https://nseindia.com/filing"},{primaryPersona:"investment-banker",watchlist:["Bank"]});assert.equal(x.event,"Bank raises guidance after profit growth");assert.match(x.evidence,/reported profit growth/i);assert.ok(x.impact);assert.ok(Array.isArray(x.watchpoints));assert.equal(x.sourceUrl,"https://nseindia.com/filing");});
+test("validation rejects unsupported or missing-source intelligence",()=>{assert.equal(validateProfessionalInsights([{event:"Claim",evidence:"",sourceUrl:""}]),false);});

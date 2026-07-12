@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { deduplicateStories } from "./news.js";
+import { isArticleResult } from "./story-briefs.js";
 
 async function checkedFetch(url, options, label) {
   const response = await fetch(url, options);
@@ -21,6 +22,11 @@ export function parseLinkupSources(data) {
     publishedAt: item.publishedAt || item.published_at || null,
     category: "general",
   })).filter((item) => item.url && item.summary);
+}
+
+export async function searchLinkupPlan(apiKey,plan) {
+  const batches=await Promise.all(plan.queries.map((item,index)=>checkedFetch("https://api.linkup.so/v1/search",{method:"POST",headers:{Authorization:"Bearer "+apiKey,"Content-Type":"application/json"},body:JSON.stringify({q:item.query,depth:"deep",outputType:"searchResults",maxResults:8,includeDomains:plan.domains})},`Persona Linkup search ${index+1}`).then(r=>r.json())));
+  return deduplicateStories(batches.flatMap(parseLinkupSources)).filter(x=>isArticleResult(x)).map(x=>({...x,professional:true}));
 }
 
 export async function searchLinkup(apiKey) {

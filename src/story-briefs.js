@@ -1,4 +1,4 @@
-const generic=/latest news|today'?s top stories|breaking news|news headlines|all news|india news \|/i;
+const generic=/latest news|latest research and news|today'?s top stories|breaking news|news headlines|all news|india news \||research and news \||^preface$|^untitled story$|^table of contents$|^the lancet oncology$/i;
 const tokens=s=>new Set(String(s||"").toLowerCase().replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(x=>x.length>3));
 const sameEvent=(a,b)=>{const x=tokens(a),y=tokens(b),hit=[...x].filter(w=>y.has(w)).length;return hit/Math.max(1,Math.min(x.size,y.size))>=.65;};
 export function isArticleResult(story){if(!story?.url||!story?.title||generic.test(story.title))return false;let u;try{u=new URL(story.url);}catch{return false}const path=u.pathname.replace(/\/$/,"");if(!path||path.split('/').filter(Boolean).length<2)return false;return String(story.summary||"").length>=40;}

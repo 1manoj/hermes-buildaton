@@ -11,4 +11,6 @@ export const config = {
   telegramBotUsername: process.env.TELEGRAM_BOT_USERNAME || "newsXroom_bot",
   publicChannelUrl: process.env.PUBLIC_CHANNEL_URL || "https://t.me/newxroom",
   convexUrl: process.env.CONVEX_URL || "",
+  defaultAdminEmail: (process.env.DEFAULT_ADMIN_EMAIL || "").trim().toLowerCase(),
+  adminApiToken: process.env.ADMIN_API_TOKEN || "",
 };

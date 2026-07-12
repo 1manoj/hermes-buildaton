@@ -9,6 +9,7 @@
  */
 
 import type * as bulletins from "../bulletins.js";
+import type * as settings from "../settings.js";
 import type * as users from "../users.js";
 
 import type {
@@ -19,6 +20,7 @@ import type {
 
 declare const fullApi: ApiFromModules<{
   bulletins: typeof bulletins;
+  settings: typeof settings;
   users: typeof users;
 }>;
 
